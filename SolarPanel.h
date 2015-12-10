@@ -1,6 +1,6 @@
 #ifndef SOLAR_PANEL_H 
 #define SOLAR_PANEL_H
- 
+# wat 
 #include <WProgram.h>
  
 class SolarPanel {
