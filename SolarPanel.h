@@ -7,6 +7,7 @@ class SolarPanel {
 public:
 		//constructor
         SolarPanel();
+        //destructor
         ~SolarPanel();
         // Gets the current going through the solar panel,
         // out of 100.
