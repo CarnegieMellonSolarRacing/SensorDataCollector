@@ -11,6 +11,18 @@ OperatorBridge::~OperatorBridge() {
   Serial.end();
 }
 
+bool OperatorBridge::send(OperatorBridge::PacketOut packet) {
+  /* Will send strings of data in the following format:
+   * 'temp, battery_charge, solar_charge\n' where each value is an int
+   */
+  Serial.print(packet.batteryTemp);
+  Serial.print(",");
+  Serial.print(packet.batteryCharge);
+  Serial.print(",");
+  Serial.println(packet.solarPanelChargeRate);
+  return true;
+}
+
 OperatorBridge::PacketIn *OperatorBridge::read() {
   if (Serial.available() > 30) {
     if (!Serial.find((char*)"BEGIN_PACKET")) return nullptr;
@@ -20,22 +32,9 @@ OperatorBridge::PacketIn *OperatorBridge::read() {
     Serial.readStringUntil('\n');
 
     PacketIn *packet = new PacketIn();
-    Serial.println((int)packet);
-    packet->testValue = testValue;
     return packet;
   }
   return nullptr;
 }
 
-bool OperatorBridge::send(OperatorBridge::PacketOut packet) {
-  Serial.print(F("BEGIN_PACKET"));
-  Serial.print(F("BATT_TEMP:"));
-  Serial.print(packet.batteryTemp);
-  Serial.print(F("BATT_CHRG:"));
-  Serial.print(packet.batteryCharge);
-  Serial.print(F("SOLR_RATE:"));
-  Serial.print(packet.solarPanelChargeRate);
-  Serial.print(F("END_PACKET"));
-  Serial.print('\n');
-  return true;
-}
+

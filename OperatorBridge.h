@@ -9,15 +9,14 @@ class OperatorBridge {
 public:
     class PacketOut {
     public:
-        float batteryTemp;
-        float batteryCharge;
-        float solarPanelChargeRate;
+        int batteryTemp;
+        int batteryCharge;
+        int solarPanelChargeRate;
     };
 
     class PacketIn {
     public:
-        bool error;
-        float testValue;
+        bool motorOn;
     };
 
     OperatorBridge();

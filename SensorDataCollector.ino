@@ -1,33 +1,37 @@
 #include "OperatorBridge.h"
+#include "PinMap.h"
 
 OperatorBridge *ob = nullptr;
 OperatorBridge::PacketOut out;
-OperatorBridge::PacketIn *in;
-int ledPin = 13;
-int sensorPin = A0;
-float r1 = 10.0;
-float r2 = 1.0;
-float scale = r2 / (r1 + r2);
 
 void setup() {
+  // calls Serial.begin(9600)
   ob = new OperatorBridge();
-  pinMode(ledPin, OUTPUT);
+}
+
+void check_temp() {
+  // turn on cooling fans if temperature too high
+  return;
 }
 
 void loop() {
-  out.batteryTemp = 123.4;
-  out.batteryCharge = (float) analogRead(sensorPin) * 5.0 / scale / 1023.0;
-  out.solarPanelChargeRate = 1234;
+  /* NOTE: Future improvements can involve arduino sending packets back out to
+   * android tablet about warnings (ex: high temperature) and have GUI show some
+   * warning, but for now just have Arduino automatically turn on cooling fans
+   * when temperature reaches a certain point. Of course, this requires Arduino
+   * to do some temperature processing on its part when in reality, arduino
+   * should simply collect and send data to tablet, let tablet do computations,
+   * and let tablet send commands to arduino (ex: turn on cooling fans).
+   */
+
+   // reason for certain changes: why send floats over serial and put more
+   // burden on communications. Just send raw int readings and let tablet handle
+   // the rest. This makes changes to methods of measuring battery state of
+   // charge easily changeable.
+  out.batteryCharge = analogRead(BATTERY_AMM_PIN);
+  out.solarPanelChargeRate = analogRead(SOLAR_AMM_PIN);
+  out.batteryTemp = analogRead(BATTERY_TEMP_PIN);
   ob->send(out);
-  
-  in = ob->read();
-  if (in != nullptr) {
-    digitalWrite(ledPin, HIGH);
-    Serial.println(in->testValue);
-    delete in;
-  } else {
-    digitalWrite(ledPin, LOW);
-  }
   delay(1000);
 }
 
